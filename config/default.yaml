@@ -1,0 +1,103 @@
+# Positional Encoders
+encoder:
+  d_input : 3           # Number of input dimensions
+  n_freqs : 10          # Number of encoding functions for samples
+  log_space : True     # If set, frequencies scale in log space
+  use_viewdirs : True   # If set, use view direction as input
+  n_freqs_views : 4     # Number of encoding functions for views
+  use_fc_encoder: False  # If set, encode fc
+  n_freqs_fc: 4        # Number of encoding frequencies for fc
+
+# Sampling parameters
+sampling:
+  # Stratified sampling
+  near : 1.0E-2
+  far : 9
+  n_samples : 32         # Number of spatial samples per ray
+  perturb : True         # If set, applies noise to sample positions
+  inverse_depth : False  # If set, samples points linearly in inverse depth
+
+  # Angle-of-Arrival Sampling
+  known_aoa: False
+  fibonacci: True                 # If set, use Fibonacci sphere sampling
+  n_rays: 24                      # used when fibonacci is set True
+  num_theta_samples : 3
+  num_phi_samples : 6
+  perturb_aoa: False 
+
+  # Hierarchical sampling
+  n_samples_hierarchical : 128    # Number of samples per ray
+  perturb_hierarchical : True     # If set, applies noise to sample positions
+
+  # Extra rays
+  num_extra_rays : 10
+
+  # DoA
+  doa_noise: 0.1
+  doa_clip: inf
+
+# Model Parameters
+models:
+  d_input : [26, 1, 8]      # CFR structure
+  n_blocks : 4              # Number of layers in network bottleneck
+  n_filters : 128           # Number of convolutional filters 
+  n_blocks_lite : 2         # Number of layers in lite network bottleneck
+  n_filters_lite : 32       # Dimensions of convolutional filters in lite network
+
+# Optimizer params.
+optimizer:
+  # Learning rate
+  lr : 5.0E-4
+  weight_decay: 5.0E-3
+  optimizer: Adam
+  use_lr_scheduler: True
+  lr_scheduler: ReduceLROnPlateau
+  scheduler_patience: 10
+  scheduler_factor: 0.9
+  min_lr: 5.0E-6
+
+# Training
+training:
+  n_epochs: 100             # Number of epochs
+  n_iters : 1000            # Number of iterations per epoch
+  train_split: 0.8          # Fraction of data to use for training  
+  lambda_coarse : 0.1       # Weight for coarse model loss
+  batch_size : 4            # Number of STA samples per gradient step
+  chunksize : 32768         # Modify as needed to fit in GPU memory
+  display_rate : 1000       # Display test output every X epochs
+  save_rate: 2000           # Save a checkpoint every X epochs
+  overwrite: True           # If set, overwrites existing checkpoints
+  save_dir: ./ckpt/
+
+# Logging
+logging:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    simple:
+      format: '%(message)s'
+    detailed:
+      format: '%(asctime)s [%(levelname)s] - %(message)s'
+      datefmt: '%Y-%m-%d %H:%M:%S'
+  handlers:
+    console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: simple
+        stream: ext://sys.stdout
+    file:
+      class: logging.FileHandler
+      level: INFO
+      formatter: detailed
+      filename: logger/default.log
+      mode: w
+      encoding: utf-8
+  loggers:
+    file_logger:
+      level: INFO
+      handlers: ['file']
+      propagate: False
+    disp_logger:
+      level: INFO
+      handlers: ['console', 'file']
+      propagate: False
