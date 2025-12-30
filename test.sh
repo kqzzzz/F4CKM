@@ -1,0 +1,1 @@
+python performance.py --env conferenceroom --d_input 52 4 16 -mt 2.4GHz_SF_FB -dt 2.4GHz_random --filter sd --device 0

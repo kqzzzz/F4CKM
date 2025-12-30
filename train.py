@@ -21,6 +21,7 @@ import os
 def preliminary(args, cfg, data_dir, save_dir=None, test=False, test_tag=None):
     # logger
     log_dir = f'./logger/{args.env}'
+    os.makedirs(log_dir, exist_ok=True)
     current_time = time.localtime()
     time_string = time.strftime("%Y-%m-%d_%H-%M-%S", current_time)
     trans_suffix = "_trans" if args.trans else ""
@@ -81,7 +82,7 @@ def preliminary(args, cfg, data_dir, save_dir=None, test=False, test_tag=None):
     disp_logger.info(f'==> Using seed:{seed}')
     # dataloader
     if args.data_tag == 'argos':
-        dataset_file = './NeRF2-main/data/MIMO/csidata.npy'
+        dataset_file = './argos_data/csidata.npy'
         loader_train = ArgosDataLoader(dataset_file=dataset_file, train=True, ratio=0.8, mask_ratio=args.mask_ratio)
         loader_test = ArgosDataLoader(dataset_file=dataset_file, train=False)
         disp_logger.info('\n****************************** Dataloader ******************************')
@@ -253,8 +254,8 @@ if __name__ == '__main__':
     parser.add_argument('--filter', type=str, default='sd')
     parser.add_argument('-wd', '--weight_decay', type=float, default=0.0001)
     parser.add_argument('--define', type=str, default='ours')
-    parser.add_argument('-mt', '--model_tag', type=str, default='28GHz_SF_FB_lite')
-    parser.add_argument('-dt', '--data_tag', type=str, default='28GHz_random')
+    parser.add_argument('-mt', '--model_tag', type=str, default='2.4GHz_SF_FB')
+    parser.add_argument('-dt', '--data_tag', type=str, default='2.4GHz_random')
     parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--ablation', type=str, default='n', choices=['n', 'fca', 'cnn', 'sfg', 'nsfg'])
     parser.add_argument('--mode', type=str, default='fb', choices=['fb', 'eg', 'esnr', 'latency', 'trans', 'flop', 'rate'])
@@ -266,6 +267,7 @@ if __name__ == '__main__':
     cfg = OmegaConf.load('./config/default.yaml')
     data_dir = "./simulator/datasets/"
     save_dir = os.path.join(cfg.training.save_dir, f'{args.env}')
+    os.makedirs(save_dir, exist_ok=True)
 
     if args.trans:
         ckpt_fname = f'ckpt/conferenceroom/{args.model_tag}_{args.filter}_ckpt_{args.ckpt}.pt'

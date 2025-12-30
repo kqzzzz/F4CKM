@@ -1,0 +1,1 @@
+python train.py --device 0 --env conferenceroom -dt 2.4GHz_random -mt 2.4GHz_SF_FB --lr 5e-5 --epochs 100 --d_input 52 4 16 --filter sd

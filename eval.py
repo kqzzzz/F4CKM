@@ -84,7 +84,6 @@ def evaluation(args, cfg, model, loader, encode, encode_viewdirs, optimizer, syn
     model.eval()
     batch_size = args.batchsize
     Nc, Nr, Nt = args.d_input
-    cfg.sampling.doa_noise = args.aoa_noise
     n_iters = math.ceil(len(loader.index) / batch_size)
     if mode == 'esnr':
         total_iters = n_iters * len(esnr_tab)

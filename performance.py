@@ -27,7 +27,7 @@ parser.add_argument('--batchsize', type=int, default=1)
 parser.add_argument('--mask_ratio', type=float, default=0, help='mask training data in argos dataset')
 parser.add_argument('--epochs', type=int, default=200)
 parser.add_argument('--filter', type=str, default='sd')
-parser.add_argument('--mode', type=str, default='eg', choices=['fb', 'eg', 'esnr', 'latency', 'trans', 'flop', 'rate', 'ss', 'sss', 'cgm'])
+parser.add_argument('--mode', type=str, default='fb', choices=['fb', 'eg', 'esnr', 'latency', 'trans', 'flop', 'rate', 'ss', 'sss', 'cgm'])
 parser.add_argument('--define', type=str, default='nerf')
 parser.add_argument('-wd', '--weight_decay', type=float, default=0.0001)
 parser.add_argument('-mt', '--model_tag', type=str, default='2.4GHz_SF_FB')
@@ -81,6 +81,9 @@ esnr_tab = [0, 3, 6, 9, 12, 15, 18]
 
 # conference model
 if args.env == 'conferenceroom':
+    savedir_conference = './performance/conferenceroom/'
+    os.makedirs(savedir_conference, exist_ok=True)
+    os.makedirs(savedir_conference, exist_ok=True)
     ablation_suffix = "" if args.ablation == 'n' else f"_wo{args.ablation}"
     ckpt_conference = f'ckpt/conferenceroom/{args.model_tag}_{args.filter}{ablation_suffix}_ckpt_best.pt'
     (model, encode, encode_viewdirs, optimizer, scheduler, synthesizer, history_epoch, best_score) = init_models(args, cfg, device, disp_logger, ckpt_conference)
@@ -94,9 +97,9 @@ if args.env == 'conferenceroom':
             'z_vals': z_vals.cpu().numpy(),
             'viewdirs': viewdirs.cpu().numpy()
         }
-        savedir_conference = f'./performance/conferenceroom/{args.model_tag}_{args.filter}_eg.npy'
-        np.save(savedir_conference, eg_conference)
-        disp_logger.info(f'==> Simulation results saved to: {savedir_conference}')
+        savepath_conference = os.path.join(savedir_conference, f'{args.model_tag}_{args.filter}_eg.npy')
+        np.save(savepath_conference, eg_conference)
+        disp_logger.info(f'==> Simulation results saved to: {savepath_conference}')
     elif mode == 'latency':
         total_list = []
         mean_list = []
@@ -123,13 +126,15 @@ if args.env == 'conferenceroom':
             'rate_list': rate_list_conference.cpu().numpy()
         }
         if mode == 'fb':
-            savedir_conference = f'./performance/conferenceroom/{args.model_tag}_{args.filter}{ablation_suffix}.npy'
+            savepath_conference = os.path.join(savedir_conference, f'{args.model_tag}_{args.filter}{ablation_suffix}.npy')
         else:
-            savedir_conference = f'./performance/conferenceroom/{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy'
-        np.save(savedir_conference, pfm_conference)
-        disp_logger.info(f'==> Simulation results saved to: {savedir_conference}')
+            savepath_conference = os.path.join(savedir_conference, f'{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy')
+        np.save(savepath_conference, pfm_conference)
+        disp_logger.info(f'==> Simulation results saved to: {savepath_conference}')
 # bedroom model
 elif args.env == 'bedroom':
+    savedir_bedroom = './performance/bedroom/'
+    os.makedirs(savedir_bedroom, exist_ok=True)
     ablation_suffix = "" if args.ablation == 'n' else f"_wo{args.ablation}"
     if mode == 'trans':
         ckpt_bedroom = f'ckpt/conferenceroom/{args.model_tag}_{args.filter}{ablation_suffix}_ckpt_best.pt'
@@ -144,14 +149,16 @@ elif args.env == 'bedroom':
         'rate_list': rate_list_bedroom.cpu().numpy()
     }
     if mode == 'fb':
-        savedir_bedroom = f'./performance/bedroom/{args.model_tag}_{args.filter}{ablation_suffix}.npy'
+        savepath_bedroom = os.path.join(savedir_bedroom, f'{args.model_tag}_{args.filter}{ablation_suffix}.npy')
     else:
-        savedir_bedroom = f'./performance/bedroom/{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy'
+        savepath_bedroom = os.path.join(savedir_bedroom, f'{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy')
 
-    np.save(savedir_bedroom, pfm_bedroom)
-    disp_logger.info(f'==> Simulation results saved to: {savedir_bedroom}')
+    np.save(savepath_bedroom, pfm_bedroom)
+    disp_logger.info(f'==> Simulation results saved to: {savepath_bedroom}')
 # office model
 elif args.env =='office':
+    savedir_office = './performance/office/'
+    os.makedirs(savedir_office, exist_ok=True)
     ablation_suffix = "" if args.ablation == 'n' else f"_wo{args.ablation}"
     if mode == 'trans':
         ckpt_office = f'ckpt/conferenceroom/{args.model_tag}_{args.filter}{ablation_suffix}_ckpt_best.pt'
@@ -167,13 +174,15 @@ elif args.env =='office':
     }
     ablation_suffix = "" if args.ablation == 'n' else f"_wo{args.ablation}"
     if mode == 'fb':
-        savedir_office = f'./performance/office/{args.model_tag}_{args.filter}{ablation_suffix}.npy'
+        savepath_office = os.path.join(savedir_office, f'{args.model_tag}_{args.filter}{ablation_suffix}.npy')
     else:
-        savedir_office = f'./performance/office/{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy'
-    np.save(savedir_office, pfm_office)
-    disp_logger.info(f'==> Simulation results saved to: {savedir_office}')
+        savepath_office = os.path.join(savedir_office, f'{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy')
+    np.save(savepath_office, pfm_office)
+    disp_logger.info(f'==> Simulation results saved to: {savepath_office}')
 # argos model
 elif args.env =='argos':
+    savedir_argos = './performance/argos/'
+    os.makedirs(savedir_argos, exist_ok=True)
     ablation_suffix = "" if args.ablation == 'n' else f"_wo{args.ablation}"
     ckpt_argos = f'ckpt/argos/{args.model_tag}_{args.filter}{ablation_suffix}_ckpt_best.pt'
     (model, encode, encode_viewdirs, optimizer, scheduler, synthesizer, history_epoch, best_score) = init_models(args, cfg, device, disp_logger, ckpt_argos)
@@ -184,9 +193,9 @@ elif args.env =='argos':
             'pred_eg': pred_eg.cpu().numpy(),
             'label_eg': label_eg.cpu().numpy()
         }
-        savedir_argos = f'./performance/argos/{args.model_tag}_{args.filter}_eg.npy'
-        np.save(savedir_argos, eg_argos)
-        disp_logger.info(f'==> Simulation results saved to: {savedir_argos}')
+        savepath_argos = os.path.join(savedir_argos, f'{args.model_tag}_{args.filter}_eg.npy')
+        np.save(savepath_argos, eg_argos)
+        disp_logger.info(f'==> Simulation results saved to: {savepath_argos}')
     elif mode == 'latency':
         total_list = []
         mean_list = []
@@ -213,8 +222,8 @@ elif args.env =='argos':
             'rate_list': rate_list_argos.cpu().numpy()
         }
         if mode == 'fb':
-            savedir_argos = f'./performance/argos/{args.model_tag}_{args.filter}{ablation_suffix}.npy'
+            savepath_argos = os.path.join(savedir_argos, f'{args.model_tag}_{args.filter}{ablation_suffix}.npy')
         else:
-            savedir_argos = f'./performance/argos/{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy'
-        np.save(savedir_argos, pfm_argos)
-        disp_logger.info(f'==> Simulation results saved to: {savedir_argos}')
+            savepath_argos = os.path.join(savedir_argos, f'{args.model_tag}_{args.filter}{ablation_suffix}_{test_tag}.npy')
+        np.save(savepath_argos, pfm_argos)
+        disp_logger.info(f'==> Simulation results saved to: {savepath_argos}')
