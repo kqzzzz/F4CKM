@@ -22,3 +22,8 @@ Install the required packages with:
 pip install -r requirements.txt
 ```
 If you're having issues with installing PyTorch compatible with your CUDA version, we strongly recommend related [documentation page](https://pytorch.org/get-started/previous-versions/).
+
+## Usage
++ simulator/ contains the code for dataset generation. Run `generateDataset.m` in MATLAB to generate datasets.
++ Use `mat2pkl.py` script in the simulator/ to convert the dataset from .mat to the .pkl.
++ `train.py` contains the training code.
