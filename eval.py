@@ -249,7 +249,6 @@ def parse_log_file(log_path):
                     else:
                         valid_entries[epoch] = snr, snr
     
-    # 生成有序数组
     epochs = sorted(train_entries.keys())
     train_array = np.array([train_entries[e] for e in epochs])
     valid_array = np.array([valid_entries[e] for e in epochs])
@@ -311,7 +310,6 @@ def parse_trans_log_file(log_path):
                     snr_mid = float(match.group(3))
                     entries[epoch] = snr_mean, snr_mid
     
-    # 生成有序数组
     epochs = sorted(entries.keys())
     entries_array = np.array([entries[e] for e in epochs])
     
@@ -520,78 +518,6 @@ def eval_sample_resolution_performance(args, cfg):
     disp_logger.info(f'==> Simulation results saved to: {savedir_argos}')
 
 
-def eval_sample_resolution_performance_single_model(args, cfg):
-    args.env = 'argos'
-    args.data_tag = 'argos'
-    args.model_tag = '2.4GHz_SF_FB_Argos_lite'
-    args.d_input = [26, 1, 8]
-    # logger
-    log_dir = f'./logger/argos'
-    current_time = time.localtime()
-    time_string = time.strftime("%Y-%m-%d_%H-%M-%S", current_time)
-    log_path = os.path.join(log_dir, f"sampling_resolution_single_model_test_{time_string}.log")
-    file_logger, disp_logger = init_logger(cfg, log_path)
-    disp_logger.info('\n****************************** Logger ******************************')
-    disp_logger.info(f'==> Logger saved at: {log_path}')
-    # key configurations
-    disp_logger.info('\n****************************** Key Configurations ******************************')
-    log = '\n'.join([
-        f'batch size: {cfg.training.batch_size}',
-        f'd input: {args.d_input}',
-    ])
-    disp_logger.info(log)
-    # hardware
-    disp_logger.info('\n****************************** Hardware ******************************')
-    device = torch.device(f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu')
-    disp_logger.info(f"==> Using {device}")
-    # random number generator
-    seed = args.seed
-    torch.manual_seed(seed)
-    np.random.seed(seed)
-    disp_logger.info('\n****************************** RNG ******************************')
-    disp_logger.info(f'==> Using seed:{seed}')
-    # dataloader
-    dataset_file = './NeRF2-main/data/MIMO/csidata.npy'
-    loader_test = ArgosDataLoader(dataset_file=dataset_file, train=False)
-    disp_logger.info('\n****************************** Dataloader ******************************')
-    disp_logger.info(f'==> dataset: {dataset_file}')
-
-    ckpt_argos = f'ckpt/argos/2.4GHz_SF_FB_Argos_lite_sd_40R128S9.0F_ckpt_best.pt'
-    radial_range_tab = ['3.0', '5.0', '7.0', '9.0']
-    n_rays_tab = ['16', '24', '32', '40']
-    n_samples_tab = ['16', '32', '64', '128']
-    snr_list = [torch.empty(0).to(device) for _ in range(len(radial_range_tab)*len(n_rays_tab)*len(n_samples_tab))]
-    sgcs_list = [torch.empty(0).to(device) for _ in range(len(radial_range_tab)*len(n_rays_tab)*len(n_samples_tab))]
-    rate_list = [torch.empty(0).to(device) for _ in range(len(radial_range_tab)*len(n_rays_tab)*len(n_samples_tab))]
-    for i, radial_range in enumerate(radial_range_tab):
-        for j, n_rays in enumerate(n_rays_tab):
-            for k, n_samples in enumerate(n_samples_tab):
-                cfg.sampling.n_rays = int(n_rays)
-                cfg.sampling.n_samples = int(n_samples)
-                cfg.sampling.far = float(radial_range)
-                disp_logger.info('\n************************************************************************')
-                disp_logger.info(f'\n==> Testing with {radial_range}m, {n_rays} rays, {n_samples} samples using single model: {ckpt_argos}')
-                (model, encode, encode_viewdirs, optimizer, scheduler, synthesizer, history_epoch, best_score) = init_models(args, cfg, device, disp_logger, ckpt_argos)
-                (snr_list_permodel, sgcs_list_permodel, rate_list_permodel) = evaluation(args, cfg, model, loader_test, encode, encode_viewdirs, optimizer, synthesizer, device)
-                index = i * len(n_rays_tab) * len(n_samples_tab) + j * len(n_samples_tab) + k
-                snr_list[index] = snr_list_permodel
-                sgcs_list[index] = sgcs_list_permodel
-                rate_list[index] = rate_list_permodel
-                disp_logger.info(f'==> Sampling resolution test completed for {radial_range}m, {n_rays} rays, {n_samples} samples.')
-                disp_logger.info(f'==> PSNR: {torch.mean(snr_list_permodel):.4f} dB, SGCS: {torch.mean(sgcs_list_permodel):.4f}, Rate: {torch.mean(rate_list_permodel):.4f} bps/Hz')
-    snr_list = torch.stack(snr_list)
-    sgcs_list = torch.stack(sgcs_list)
-    rate_list = torch.stack(rate_list)
-    pfm_argos = {
-        'snr_list': snr_list.cpu().numpy(),
-        'sgcs_list': sgcs_list.cpu().numpy(),
-        'rate_list': rate_list.cpu().numpy()
-    }
-    savedir_argos = f'./performance/argos/2.4GHz_SF_FB_Argos_lite_sd_SS_single_model.npy'
-    np.save(savedir_argos, pfm_argos)
-    disp_logger.info(f'==> Simulation results saved to: {savedir_argos}')
-    
-
 def eval_channel_gain_map(args, cfg):
     args.data_tag = '2.4GHz_uniform'
     args.model_tag = '2.4GHz_SF_FB'
@@ -790,9 +716,3 @@ def eval_flops(args, cfg, model):
     flops, macs, params = calculate_flops(model=model, input_shape=input_shape, output_as_string=True, output_precision=4, print_detailed=False, print_results=False)
     return flops, macs, params
         
-        
-        
-        
-        
-
-"""The functions below have been deprecated."""
