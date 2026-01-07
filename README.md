@@ -2,6 +2,8 @@
 
 This repository is built upon [NeWRF](https://github.com/LuHaofan/NeWRF), thanks very much!
 
+We would gradually upload the full-version of the implementation.
+
 ## Citation 
 ``` bash
 
@@ -36,4 +38,4 @@ bash test.sh
 ```
 
 ## Datasets and Pretrained Models
-Datasets and pretrained models are available at [Here](https://pan.baidu.com/s/1jpfs9kOIqpf8FGgvwRDLfQ?pwd=173e)
+Datasets and pretrained models are available [Here](https://pan.baidu.com/s/1jpfs9kOIqpf8FGgvwRDLfQ?pwd=173e)
