@@ -62,7 +62,7 @@ class DatasetParser:
         def process_group(group: h5py.Group) -> Dict[str, list]:
             return {
                 col: [self._transpose_data(f[ref], col) 
-                      for ref in group[col][0, :]]  # 直接解引用
+                      for ref in group[col][0, :]]
                 for col in group.keys()
             }
 
@@ -77,7 +77,7 @@ class DatasetParser:
     def _transpose_data(self, dataset: h5py.Dataset, col: str) -> np.ndarray:
         if rule := self.TRANSPOSE_RULES.get(col):
             return dataset[:].transpose(rule)
-        return dataset[:]  # 默认不转置
+        return dataset[:]
 
     def _process_legacy_mat(self) -> pd.DataFrame:
         data = scipy.io.loadmat(self.dataset_file)
@@ -104,20 +104,15 @@ class DatasetParser:
                 else None
             )
         
-        # 字段维度处理
         for field in self.CLEAN_RULES['complex_array_fields']:
             if field in df: 
                 df[field] = df[field].apply(lambda x: x.view(np.complex128) if x.ndim>1 else np.nan)
         
-        # 标量提取
         for field in self.CLEAN_RULES['scalar_fields']:
             if field in df: 
                 df[field] = df[field].apply(lambda x: x[0,0] if np.prod(x.shape)==1 else np.nan)
                 
-        # for field in self.CLEAN_RULES['interaction_fields']:
-        #     pass
         
-        # 过滤无效数据
         return df[df['TxPos'].notna()]
 
     def save_to_pkl(self, data_dir: str, surfix: str = "") -> None:

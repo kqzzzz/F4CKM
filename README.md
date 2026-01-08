@@ -1,12 +1,17 @@
-# PyTorch implementation of F<sup>4</sup>-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering
+# F<sup>4</sup>-CKM
+## PyTorch implementation of [F<sup>4</sup>-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering](https://arxiv.org/abs/2601.03601)
 
 This repository is built upon [NeWRF](https://github.com/LuHaofan/NeWRF), thanks very much!
 
 We would gradually upload the full-version of the implementation.
 
-## Citation 
+## Citation (Preprint Version)
 ``` bash
-
+@article{ f4ckm,
+  title={F4-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering},
+  author={Kequan Zhou and Guangyi Zhang and Hanlei Li and Yunlong Cai and Shengli Liu and Guanding Yu},
+  journal={arXiv preprint arXiv:2601.03601},
+  year={2026},}
 ```
 
 ## Clone
@@ -23,16 +28,16 @@ Install the required packages with:
 ```bash
 pip install -r requirements.txt
 ```
-If you're having issues with installing PyTorch compatible with your CUDA version, we strongly recommend related [documentation page](https://pytorch.org/get-started/previous-versions/).
+If you're having issues with installing PyTorch compatible with your CUDA version, we strongly recommend this [documentation page](https://pytorch.org/get-started/previous-versions/).
 
 ## Usage
 + simulator/ contains the code for dataset generation. To generate the datasets, run `generateDataset.m` in MATLAB (R2024a or later recommended).
 + Use `mat2pkl.py` script in the simulator/ to convert the dataset from .mat to the .pkl.
-+ Example of train the F<sep>4<sep>-CKM model:
++ Example of training the F<sep>4<sep>-CKM model:
 ```bash
 bash train.sh
 ```
-+ Example of test the F<sep>4<sep>-CKM model:
++ Example of testing the F<sep>4<sep>-CKM model:
 ```bash
 bash test.sh
 ```

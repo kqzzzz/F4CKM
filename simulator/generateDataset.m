@@ -61,7 +61,6 @@ function generateDataset(varargin)
     
     % align datasets by Rx positions
     [cleanUL, cleanDL] = alignByRxPos(subDatasets{1}, subDatasets{2});
-    % 结果验证
     disp(['Aligned dataset size：', num2str(numel(cleanUL))]);
     
     % save dataset
