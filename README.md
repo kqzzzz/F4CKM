@@ -1,5 +1,5 @@
 # F<sup>4</sup>-CKM
-## PyTorch implementation of [F<sup>4</sup>-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering](https://arxiv.org/abs/2601.03601)
+## PyTorch implementation of [F<sup>4</sup>-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering](https://ieeexplore.ieee.org/document/11414114)
 
 This repository is built upon [NeWRF](https://github.com/LuHaofan/NeWRF), thanks very much!
 
@@ -10,8 +10,10 @@ We would gradually upload the full-version of the implementation.
 @article{ f4ckm,
   title={F4-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering},
   author={Kequan Zhou and Guangyi Zhang and Hanlei Li and Yunlong Cai and Shengli Liu and Guanding Yu},
-  journal={arXiv preprint arXiv:2601.03601},
-  year={2026},}
+  journal={IEEE Trans. Commun.},
+  year={2026},
+  month={early access, Feb. 28,},
+  note={{DOI}: {10.1109/TCOMM.2026.3668162}}}
 ```
 
 ## Clone
