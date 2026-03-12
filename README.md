@@ -12,8 +12,10 @@ We would gradually upload the full-version of the implementation.
   author={Kequan Zhou and Guangyi Zhang and Hanlei Li and Yunlong Cai and Shengli Liu and Guanding Yu},
   journal={IEEE Trans. Commun.},
   year={2026},
-  month={early access, Feb. 26,},
-  note={{DOI}: {10.1109/TCOMM.2026.3668162}}}
+  month={},
+  volume={74},
+  number={},
+  pages={5684-5700}}
 ```
 
 ## Clone
