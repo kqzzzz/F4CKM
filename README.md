@@ -5,7 +5,7 @@ This repository is built upon [NeWRF](https://github.com/LuHaofan/NeWRF), thanks
 
 We would gradually upload the full-version of the implementation.
 
-## Citation (Preprint Version)
+## Citation
 ``` bash
 @article{ f4ckm,
   title={F4-CKM: Learning Channel Knowledge Map with Radio Frequency Radiance Field Rendering},
